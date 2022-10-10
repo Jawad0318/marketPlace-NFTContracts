@@ -14,7 +14,7 @@ error NotApprovedForMarketplace();
 error PriceMustBeAboveZero();
 
 contract NFTDepotMarketplace is NFTDepotAuctions {
-    // Name of the marketplace
+    // Name of the marketplace - NFTDepot (Pass when deploying Contract)
     string public name;
 
     uint256 public listingIndex;
