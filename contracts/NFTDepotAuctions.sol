@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
+import "./NFTDepotRoyalties.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "./NFTDepotNFT.sol";
 import "./NFTDepotMath.sol";
 
 import "hardhat/console.sol"; //For debugging only
@@ -19,7 +19,7 @@ error AuctionHasBids();
 error NoBidsToClaim();
 
 // This was named MarketPlace before.
-contract NFTDepotAuctions is IERC721Receiver, ReentrancyGuard, NFTDepotMath {
+contract NFTDepotAuctions is IERC721Receiver, ReentrancyGuard, NFTDepotMath, NFTDepotRoyalties {
     // Index of auctions
     uint256 public index = 0;
     // Structure to define auction properties
@@ -65,16 +65,6 @@ contract NFTDepotAuctions is IERC721Receiver, ReentrancyGuard, NFTDepotMath {
     event NFTRefunded(uint256 auctionIndex, uint256 nftId, address claimedBy);
 
     /**
-     * Check if an auction is open
-     * @param _auctionIndex Index of the auction
-     */
-    function isOpen(uint256 _auctionIndex) public view returns (bool) {
-        Auction storage auction = allAuctions[_auctionIndex];
-        if (block.timestamp >= auction.endAuction) return false;
-        return true;
-    }
-
-    /**
      * Check if a specific address is
      * a contract address
      * @param _addr: address to verify
@@ -85,6 +75,16 @@ contract NFTDepotAuctions is IERC721Receiver, ReentrancyGuard, NFTDepotMath {
             size := extcodesize(_addr)
         }
         return size > 0;
+    }
+
+    /**
+     * Check if an auction is open
+     * @param _auctionIndex Index of the auction
+     */
+    function isOpen(uint256 _auctionIndex) public view returns (bool) {
+        Auction storage auction = allAuctions[_auctionIndex];
+        if (block.timestamp >= auction.endAuction) return false;
+        return true;
     }
 
     // Auction features.
@@ -166,7 +166,7 @@ contract NFTDepotAuctions is IERC721Receiver, ReentrancyGuard, NFTDepotMath {
      * in the contract
      * @param _auctionIndex Index of the auction
      */
-    function cancelAuction(uint256 _auctionIndex) external {
+    function refund(uint256 _auctionIndex) external {
         // require(_auctionIndex < allAuctions.length, "Invalid auction index");
         if (_auctionIndex > allAuctions.length) {
             revert InvalidAuction();
@@ -297,6 +297,16 @@ contract NFTDepotAuctions is IERC721Receiver, ReentrancyGuard, NFTDepotMath {
             auction.currentBidPrice
         );
         creator.transfer(creatorCommision);
+
+        // calculating royalty amount to transfer
+        uint256 royaltyAmountToTransfer = calculateRoyalties(
+            auction.addressNFTCollection,
+            msg.value
+        );
+        address collectionOwner = getRoyaltyReciever(
+            auction.addressNFTCollection
+        );
+        payable(collectionOwner).transfer(royaltyAmountToTransfer);
 
         // Transfer locked tokens from the market place contract
         // to the wallet of the creator of the auction

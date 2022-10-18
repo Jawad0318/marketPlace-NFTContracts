@@ -14,7 +14,7 @@ error NotApprovedForMarketplace();
 error PriceMustBeAboveZero();
 
 contract NFTDepotMarketplace is NFTDepotAuctions {
-    // Name of the marketplace - NFTDepot (Pass when deploying Contract)
+     // Name of the marketplace
     string public name;
 
     uint256 public listingIndex;
@@ -188,6 +188,14 @@ contract NFTDepotMarketplace is NFTDepotAuctions {
             payable(msg.sender),
             nftId
         );
+
+        // calculating and transfering royalties
+        uint256 royaltyAmountToTransfer = calculateRoyalties(
+            _addressNFTCollection,
+            msg.value
+        );
+        address collectionOwner = getRoyaltyReciever(_addressNFTCollection);
+        payable(collectionOwner).transfer(royaltyAmountToTransfer);
 
         // Calculating seller commisions
 
