@@ -1,5 +1,5 @@
 {
-  "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+  "address": "0xBC2aC1CbBeD7D5858Bb917b02FdfbD1d5AC1dA4c",
   "abi": [
     {
       "type": "constructor",
@@ -174,7 +174,6 @@
       "constant": true,
       "stateMutability": "view",
       "payable": false,
-      "gas": 29000000,
       "inputs": [{ "type": "address" }],
       "outputs": [
         { "type": "address", "name": "royaltyReciever" },
@@ -187,7 +186,6 @@
       "constant": true,
       "stateMutability": "view",
       "payable": false,
-      "gas": 29000000,
       "inputs": [{ "type": "uint256" }],
       "outputs": [
         { "type": "uint256", "name": "index" },
@@ -206,7 +204,6 @@
       "constant": true,
       "stateMutability": "view",
       "payable": false,
-      "gas": 29000000,
       "inputs": [{ "type": "uint256" }],
       "outputs": [
         { "type": "uint256", "name": "L_index" },
@@ -221,7 +218,6 @@
       "constant": true,
       "stateMutability": "view",
       "payable": false,
-      "gas": 29000000,
       "inputs": [],
       "outputs": [{ "type": "uint256" }]
     },
@@ -231,7 +227,6 @@
       "constant": false,
       "stateMutability": "payable",
       "payable": true,
-      "gas": 29000000,
       "inputs": [{ "type": "uint256", "name": "_auctionIndex" }],
       "outputs": [{ "type": "bool" }]
     },
@@ -241,7 +236,6 @@
       "constant": false,
       "stateMutability": "payable",
       "payable": true,
-      "gas": 29000000,
       "inputs": [
         { "type": "address", "name": "_addressNFTCollection" },
         { "type": "uint256", "name": "nftId" }
@@ -254,7 +248,6 @@
       "constant": true,
       "stateMutability": "view",
       "payable": false,
-      "gas": 29000000,
       "inputs": [{ "type": "uint256", "name": "_price" }],
       "outputs": [{ "type": "uint256" }]
     },
@@ -264,7 +257,6 @@
       "constant": true,
       "stateMutability": "view",
       "payable": false,
-      "gas": 29000000,
       "inputs": [
         { "type": "address", "name": "_addressNFTCollection" },
         { "type": "uint256", "name": "_price" }
@@ -277,7 +269,6 @@
       "constant": true,
       "stateMutability": "view",
       "payable": false,
-      "gas": 29000000,
       "inputs": [{ "type": "uint256", "name": "_price" }],
       "outputs": [{ "type": "uint256" }]
     },
@@ -286,7 +277,6 @@
       "name": "cancelListing",
       "constant": false,
       "payable": false,
-      "gas": 29000000,
       "inputs": [
         { "type": "address", "name": "_addressNFTCollection" },
         { "type": "uint256", "name": "nftId" }
@@ -298,7 +288,6 @@
       "name": "claimNFT",
       "constant": false,
       "payable": false,
-      "gas": 29000000,
       "inputs": [{ "type": "uint256", "name": "_auctionIndex" }],
       "outputs": []
     },
@@ -308,7 +297,6 @@
       "constant": false,
       "stateMutability": "payable",
       "payable": true,
-      "gas": 29000000,
       "inputs": [{ "type": "uint256", "name": "_auctionIndex" }],
       "outputs": []
     },
@@ -317,7 +305,6 @@
       "name": "createAuction",
       "constant": false,
       "payable": false,
-      "gas": 29000000,
       "inputs": [
         { "type": "address", "name": "_addressNFTCollection" },
         { "type": "uint256", "name": "_nftId" },
@@ -332,7 +319,6 @@
       "constant": true,
       "stateMutability": "view",
       "payable": false,
-      "gas": 29000000,
       "inputs": [],
       "outputs": [
         {
@@ -352,7 +338,6 @@
       "constant": true,
       "stateMutability": "view",
       "payable": false,
-      "gas": 29000000,
       "inputs": [],
       "outputs": [
         {
@@ -376,7 +361,6 @@
       "constant": true,
       "stateMutability": "view",
       "payable": false,
-      "gas": 29000000,
       "inputs": [{ "type": "uint256", "name": "_auctionIndex" }],
       "outputs": [{ "type": "uint256" }]
     },
@@ -386,7 +370,6 @@
       "constant": true,
       "stateMutability": "view",
       "payable": false,
-      "gas": 29000000,
       "inputs": [{ "type": "uint256", "name": "_auctionIndex" }],
       "outputs": [{ "type": "address" }]
     },
@@ -396,7 +379,6 @@
       "constant": true,
       "stateMutability": "view",
       "payable": false,
-      "gas": 29000000,
       "inputs": [
         { "type": "address", "name": "_addressNFTCollection" },
         { "type": "uint256", "name": "nftId" }
@@ -419,7 +401,6 @@
       "constant": true,
       "stateMutability": "view",
       "payable": false,
-      "gas": 29000000,
       "inputs": [],
       "outputs": [{ "type": "uint256" }]
     },
@@ -429,7 +410,6 @@
       "constant": true,
       "stateMutability": "view",
       "payable": false,
-      "gas": 29000000,
       "inputs": [{ "type": "address", "name": "_addressNFTCollection" }],
       "outputs": [{ "type": "address" }]
     },
@@ -439,7 +419,6 @@
       "constant": true,
       "stateMutability": "view",
       "payable": false,
-      "gas": 29000000,
       "inputs": [],
       "outputs": [{ "type": "uint256" }]
     },
@@ -449,7 +428,6 @@
       "constant": true,
       "stateMutability": "view",
       "payable": false,
-      "gas": 29000000,
       "inputs": [],
       "outputs": [{ "type": "uint256" }]
     },
@@ -459,7 +437,6 @@
       "constant": true,
       "stateMutability": "view",
       "payable": false,
-      "gas": 29000000,
       "inputs": [],
       "outputs": [{ "type": "uint256" }]
     },
@@ -469,7 +446,6 @@
       "constant": true,
       "stateMutability": "view",
       "payable": false,
-      "gas": 29000000,
       "inputs": [{ "type": "uint256", "name": "_auctionIndex" }],
       "outputs": [{ "type": "bool" }]
     },
@@ -479,7 +455,6 @@
       "constant": false,
       "stateMutability": "payable",
       "payable": true,
-      "gas": 29000000,
       "inputs": [
         { "type": "address", "name": "_addressNFTCollection" },
         { "type": "uint256", "name": "nftId" },
@@ -493,7 +468,6 @@
       "constant": true,
       "stateMutability": "view",
       "payable": false,
-      "gas": 29000000,
       "inputs": [],
       "outputs": [{ "type": "uint256" }]
     },
@@ -503,7 +477,6 @@
       "constant": true,
       "stateMutability": "view",
       "payable": false,
-      "gas": 29000000,
       "inputs": [],
       "outputs": [{ "type": "uint256" }]
     },
@@ -513,7 +486,6 @@
       "constant": true,
       "stateMutability": "view",
       "payable": false,
-      "gas": 29000000,
       "inputs": [],
       "outputs": [{ "type": "uint256" }]
     },
@@ -523,7 +495,6 @@
       "constant": true,
       "stateMutability": "view",
       "payable": false,
-      "gas": 29000000,
       "inputs": [],
       "outputs": [{ "type": "string" }]
     },
@@ -532,7 +503,6 @@
       "name": "onERC721Received",
       "constant": false,
       "payable": false,
-      "gas": 29000000,
       "inputs": [
         { "type": "address" },
         { "type": "address" },
@@ -547,7 +517,6 @@
       "constant": true,
       "stateMutability": "view",
       "payable": false,
-      "gas": 29000000,
       "inputs": [],
       "outputs": [{ "type": "address" }]
     },
@@ -556,7 +525,6 @@
       "name": "refund",
       "constant": false,
       "payable": false,
-      "gas": 29000000,
       "inputs": [{ "type": "uint256", "name": "_auctionIndex" }],
       "outputs": []
     },
@@ -565,7 +533,6 @@
       "name": "renounceOwnership",
       "constant": false,
       "payable": false,
-      "gas": 29000000,
       "inputs": [],
       "outputs": []
     },
@@ -575,7 +542,6 @@
       "constant": true,
       "stateMutability": "view",
       "payable": false,
-      "gas": 29000000,
       "inputs": [{ "type": "address" }, { "type": "uint256" }],
       "outputs": [
         { "type": "uint256", "name": "L_index" },
@@ -589,7 +555,6 @@
       "name": "setAuctionTimeLimit",
       "constant": false,
       "payable": false,
-      "gas": 29000000,
       "inputs": [{ "type": "uint256", "name": "_time" }],
       "outputs": []
     },
@@ -598,7 +563,6 @@
       "name": "setListingFee",
       "constant": false,
       "payable": false,
-      "gas": 29000000,
       "inputs": [{ "type": "uint256", "name": "_newFee" }],
       "outputs": []
     },
@@ -607,7 +571,6 @@
       "name": "setRoyalty",
       "constant": false,
       "payable": false,
-      "gas": 29000000,
       "inputs": [
         { "type": "address", "name": "_addressNFTCollection" },
         { "type": "address", "name": "_royaltyReciever" },
@@ -620,7 +583,6 @@
       "name": "setpercentageCommision",
       "constant": false,
       "payable": false,
-      "gas": 29000000,
       "inputs": [{ "type": "uint256", "name": "_commision" }],
       "outputs": []
     },
@@ -629,7 +591,6 @@
       "name": "transferOwnership",
       "constant": false,
       "payable": false,
-      "gas": 29000000,
       "inputs": [{ "type": "address", "name": "newOwner" }],
       "outputs": []
     },
@@ -638,7 +599,6 @@
       "name": "updateListing",
       "constant": false,
       "payable": false,
-      "gas": 29000000,
       "inputs": [
         { "type": "address", "name": "_addressNFTCollection" },
         { "type": "uint256", "name": "nftId" },
@@ -651,7 +611,6 @@
       "name": "updateRoyalty",
       "constant": false,
       "payable": false,
-      "gas": 29000000,
       "inputs": [
         { "type": "address", "name": "_addressNFTCollection" },
         { "type": "address", "name": "_royaltyReciever" },
@@ -665,7 +624,6 @@
       "constant": false,
       "stateMutability": "payable",
       "payable": true,
-      "gas": 29000000,
       "inputs": [{ "type": "address", "name": "_to" }],
       "outputs": []
     }
