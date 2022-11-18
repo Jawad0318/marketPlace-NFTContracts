@@ -4,14 +4,9 @@ pragma solidity ^0.8.7;
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract NFTDepotMath is Ownable {
-    uint256 public marketPercentageCommision = 100; // this is in bips. i.e 1 percent is represented by 10 and 10 by 1000
+   uint256 public marketPercentageCommision = 100; // this is in bips. i.e 1 percent is represented by 10 and 10 by 1000
     uint256 public listingFee = 0;
-    uint public auctionTimeLimit = 2880; // Set in minutes (2 Days)
-
-    /**
-     * @notice Method for calculating MarketPlace Commision
-     * @param _price selling price of the NFT
-     */
+    uint256 public auctionTimeLimit = 2880; // Set in minutes (2 Days)
 
     /**
      * @notice Method for setting Listing price
@@ -30,6 +25,10 @@ contract NFTDepotMath is Ownable {
         marketPercentageCommision = _commision;
     }
 
+    /**
+     * @notice Method for calculating MarketPlace Commision
+     * @param _price selling price of the NFT
+     */
     function calculateMarketPlaceCommision(uint256 _price)
         public
         view
@@ -55,14 +54,14 @@ contract NFTDepotMath is Ownable {
     }
 
     function convertSecToMin(uint256 _time) internal pure returns (uint256) {
-        return (_time * 60);
-    }
-
-    function convertMinToSec(uint256 _time) internal pure returns (uint256) {
         return (_time / 60);
     }
 
-    function setAuctionTimeLimit(uint _time) external onlyOwner {
+    function convertMinToSec(uint256 _time) internal pure returns (uint256) {
+        return (_time * 60);
+    }
+
+    function setAuctionTimeLimit(uint256 _time) external onlyOwner {
         auctionTimeLimit = (_time * 60);
     }
 }

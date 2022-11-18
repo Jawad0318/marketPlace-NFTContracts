@@ -50,32 +50,32 @@ contract NFTDepotAuctions is IERC721Receiver, ReentrancyGuard, NFTDepotMath, NFT
     Auction[] public allAuctions;
 
     // Public event to notify that a new bid has been placed
-    event NewBidOnAuction(uint256 auctionIndex, uint256 newBid);
+    // event NewBidOnAuction(uint256 auctionIndex, uint256 newBid);
 
     // Public event to notif that winner of an
     // auction claim for his reward
-    event NFTClaimed(uint256 auctionIndex, uint256 nftId, address claimedBy);
+    // event NFTClaimed(uint256 auctionIndex, uint256 nftId, address claimedBy);
 
     // Public event to notify that the creator of
     // an auction claimed for his money
-    event TokensClaimed(uint256 auctionIndex, uint256 nftId, address claimedBy);
+    // event TokensClaimed(uint256 auctionIndex, uint256 nftId, address claimedBy);
 
     // Public event to notify that an NFT has been refunded to the
     // creator of an auction
-    event NFTRefunded(uint256 auctionIndex, uint256 nftId, address claimedBy);
+    // event NFTRefunded(uint256 auctionIndex, uint256 nftId, address claimedBy);
 
     /**
      * Check if a specific address is
      * a contract address
      * @param _addr: address to verify
      */
-    function isContract(address _addr) internal view returns (bool) {
-        uint256 size;
-        assembly {
-            size := extcodesize(_addr)
-        }
-        return size > 0;
-    }
+    // function isContract(address _addr) internal view returns (bool) {
+    //     uint256 size;
+    //     assembly {
+    //         size := extcodesize(_addr)
+    //     }
+    //     return size > 0;
+    // }
 
     /**
      * Check if an auction is open
@@ -115,14 +115,14 @@ contract NFTDepotAuctions is IERC721Receiver, ReentrancyGuard, NFTDepotMath, NFT
         // Somewhat prevents contract calls
         // require(!isContract(msg.sender), "Cannot be called by a contract");
         // Need to confirm
-        if (isContract(msg.sender)) {
-            revert ContractCall();
-        }
+        // if (isContract(msg.sender)) {
+        //     revert ContractCall();
+        // }
 
         // check if new bid price is higher than the current one
         // require(
         //     msg.value > auction.currentBidPrice,
-        //     "New bid price must be higher than the current bid"
+        //     "Price must be higher"
         // );
         if (msg.value <= auction.currentBidPrice) {
             revert InvalidBidPrice();
@@ -133,9 +133,9 @@ contract NFTDepotAuctions is IERC721Receiver, ReentrancyGuard, NFTDepotMath, NFT
         //     msg.sender != auction.creator,
         //     "Creator of the auction cannot place new bid"
         // );
-        if (msg.sender == auction.creator) {
-            revert OwnerCannotBid();
-        }
+        // if (msg.sender == auction.creator) {
+        //     revert OwnerCannotBid();
+        // }
 
         // new bid is better than current bid!
 
@@ -154,7 +154,7 @@ contract NFTDepotAuctions is IERC721Receiver, ReentrancyGuard, NFTDepotMath, NFT
         auction.bidCount++;
 
         // Trigger public event
-        emit NewBidOnAuction(_auctionIndex, msg.value);
+        // emit NewBidOnAuction(_auctionIndex, msg.value);
 
         return true;
     }
@@ -208,7 +208,7 @@ contract NFTDepotAuctions is IERC721Receiver, ReentrancyGuard, NFTDepotMath, NFT
             auction.nftId
         );
 
-        emit NFTRefunded(_auctionIndex, auction.nftId, msg.sender);
+        // emit NFTRefunded(_auctionIndex, auction.nftId, msg.sender);
     }
 
     /**
@@ -311,7 +311,7 @@ contract NFTDepotAuctions is IERC721Receiver, ReentrancyGuard, NFTDepotMath, NFT
         // Transfer locked tokens from the market place contract
         // to the wallet of the creator of the auction
 
-        emit TokensClaimed(_auctionIndex, auction.nftId, msg.sender);
+        // emit TokensClaimed(_auctionIndex, auction.nftId, msg.sender);
     }
 
     function onERC721Received(

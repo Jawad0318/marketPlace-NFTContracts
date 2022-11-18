@@ -14,8 +14,10 @@ error NotApprovedForMarketplace();
 error PriceMustBeAboveZero();
 
 contract NFTDepotMarketplace is NFTDepotAuctions {
-     // Name of the marketplace
+    // Name of the marketplace
     string public name;
+
+    uint256 public offerId;
 
     uint256 public listingIndex;
 
@@ -33,27 +35,68 @@ contract NFTDepotMarketplace is NFTDepotAuctions {
         bool isListed;
     }
 
-    event ItemListed(
-        address indexed seller,
-        address indexed _addressNFTCollection,
-        uint256 indexed nftId,
-        uint256 price
-    );
+    struct Offers {
+        uint256 offerId;
+        address sender;
+        address reciever;
+        address _addressNFTCollection;
+        uint256 id;
+        uint256 price;
+        bool accepted;
+        bool cancel;
+    }
 
-    event ItemCanceled(
-        address indexed seller,
-        address indexed _addressNFTCollection,
-        uint256 indexed nftId
-    );
+    // event ItemListed(
+    //     address indexed seller,
+    //     address indexed _addressNFTCollection,
+    //     uint256 indexed nftId,
+    //     uint256 price
+    // );
 
-    event ItemBought(
-        address indexed buyer,
-        address indexed _addressNFTCollection,
-        uint256 indexed nftId,
-        uint256 price
-    );
+    // event ItemCanceled(
+    //     address indexed seller,
+    //     address indexed _addressNFTCollection,
+    //     uint256 indexed nftId
+    // );
+
+    // event ItemBought(
+    //     address indexed buyer,
+    //     address indexed _addressNFTCollection,
+    //     uint256 indexed nftId,
+    //     uint256 price
+    // );
+
+    // event OfferCreated(
+    //     uint256 id,
+    //     address sender,
+    //     address reciever,
+    //     address _addressNFTCollection,
+    //     uint256 NFTId,
+    //     uint256 price
+    // );
+
+    // event OfferCancelled(
+    //     uint256 id,
+    //     address sender,
+    //     address reciever,
+    //     address _addressNFTCollection,
+    //     uint256 NFTId,
+    //     uint256 price,
+    //     bool canceled
+    // );
+
+    // event OfferAccepted(
+    //     uint256 id,
+    //     address sender,
+    //     address reciever,
+    //     address _addressNFTCollection,
+    //     uint256 NFTId,
+    //     uint256 price
+    // );
 
     ListingsRecord[] public allListings;
+
+    Offers[] public allOffers;
 
     mapping(address => mapping(uint256 => Listing)) public s_listings;
 
@@ -135,7 +178,106 @@ contract NFTDepotMarketplace is NFTDepotAuctions {
         );
         listingIndex++;
 
-        emit ItemListed(msg.sender, _addressNFTCollection, nftId, price);
+        // emit ItemListed(msg.sender, _addressNFTCollection, nftId, price);
+    }
+
+    function sendOffer(
+        address _addressNFTCollection,
+        uint256 nftId
+    ) public payable isListed(_addressNFTCollection, nftId) {
+        // require(!isContract(msg.sender), "Sender must be user");
+        NFTDepotNFT nft = NFTDepotNFT(_addressNFTCollection);
+        address ownerOfNFT = nft.ownerOf(nftId);
+        allOffers.push(
+            Offers(
+                offerId,
+                payable(msg.sender),
+                payable(ownerOfNFT),
+                _addressNFTCollection,
+                nftId,
+                msg.value,
+                false,
+                false
+            )
+        );
+        offerId++;
+        // emit OfferCreated(
+        //     offerId,
+        //     msg.sender,
+        //     ownerOfNFT,
+        //     _addressNFTCollection,
+        //     nftId,
+        //     price
+        // );
+    }
+
+    function cancelOffer(uint256 _offerId) public payable nonReentrant {
+        Offers storage offer = allOffers[_offerId];
+        require(offer.sender == msg.sender);
+        require(!offer.cancel);
+        require(!offer.accepted);
+        offer.cancel = true;
+        payable(offer.sender).transfer(offer.price);
+        // emit OfferCancelled(
+        //     offer.offerId,
+        //     offer.sender,
+        //     offer.reciever,
+        //     offer._addressNFTCollection,
+        //     offer.id,
+        //     offer.price,
+        //     offer.cancel
+        // );
+    }
+
+    function acceptOffer(uint256 _offerId) public payable nonReentrant {
+        Offers storage offer = allOffers[_offerId];
+        Listing memory listedItem = s_listings[offer._addressNFTCollection][
+            offer.id
+        ];
+        if (listedItem.price <= 0) {
+            revert NotListed(offer._addressNFTCollection, offer.id);
+        }
+        require(offer.reciever == msg.sender);
+        require(!offer.cancel);
+        require(!offer.accepted);
+        offer.accepted = true;
+        listedItem.isListedState = false;
+        uint256 listingLocation = s_listings[offer._addressNFTCollection][
+            offer.id
+        ].L_index;
+        ListingsRecord storage listingss = allListings[listingLocation];
+        listingss.isListed = false;
+        delete (s_listings[offer._addressNFTCollection][offer.id]);
+
+        NFTDepotNFT(offer._addressNFTCollection).safeTransferFrom(
+            listedItem.seller,
+            payable(msg.sender),
+            offer.id
+        );
+
+        // calculating and transfering royalties
+        uint256 royaltyAmountToTransfer = calculateRoyalties(
+            offer._addressNFTCollection,
+            offer.price
+        );
+        address collectionOwner = getRoyaltyReciever(
+            offer._addressNFTCollection
+        );
+        payable(collectionOwner).transfer(royaltyAmountToTransfer);
+
+        // Calculating seller commisions
+
+        uint256 sellerMoneyFromSale = calculateSellerMoney(offer.price);
+
+        //transfering shares
+
+        payable(msg.sender).transfer(sellerMoneyFromSale);
+
+        // emit OfferAccepted(offer.id, offer.sender, offer.reciever, offer._addressNFTCollection, offer.id, offer.price);
+    }
+
+        function getAllOffers() public view returns (Offers[] memory) {
+        return allOffers;
     }
 
     /**
@@ -153,7 +295,7 @@ contract NFTDepotMarketplace is NFTDepotAuctions {
         ListingsRecord storage listingss = allListings[listingLocation];
         listingss.isListed = false;
         delete (s_listings[_addressNFTCollection][nftId]);
-        emit ItemCanceled(msg.sender, _addressNFTCollection, nftId);
+        // emit ItemCanceled(msg.sender, _addressNFTCollection, nftId);
     }
 
     /**
@@ -205,12 +347,12 @@ contract NFTDepotMarketplace is NFTDepotAuctions {
 
         payable(msg.sender).transfer(sellerMoneyFromSale);
 
-        emit ItemBought(
-            msg.sender,
-            _addressNFTCollection,
-            nftId,
-            listedItem.price
-        );
+        // emit ItemBought(
+        //     msg.sender,
+        //     _addressNFTCollection,
+        //     nftId,
+        //     listedItem.price
+        // );
     }
 
     /**
@@ -234,7 +376,7 @@ contract NFTDepotMarketplace is NFTDepotAuctions {
             revert PriceMustBeAboveZero();
         }
         s_listings[_addressNFTCollection][nftId].price = newPrice;
-        emit ItemListed(msg.sender, _addressNFTCollection, nftId, newPrice);
+        // emit ItemListed(msg.sender, _addressNFTCollection, nftId, newPrice);
     }
 
     /////////////////////
@@ -284,18 +426,18 @@ contract NFTDepotMarketplace is NFTDepotAuctions {
         uint256 endAuction
     ) external returns (uint256) {
         //Check is addresses are valid
-        uint256 _endAuction = convertSecToMin(endAuction);
-        require(_endAuction <= auctionTimeLimit, "Must be less than 2 days");
-        require(
-            isContract(_addressNFTCollection),
-            "Invalid NFT Collection contract address"
-        );
+        uint256 _endAuction = convertMinToSec(endAuction);
+        require(endAuction <= auctionTimeLimit, "Less than 2 days");
+        // require(
+        //     isContract(_addressNFTCollection),
+        //     "Invalid contract address"
+        // );
 
         // Check if the endAuction time is valid
         // require(_endAuction > block.timestamp, "Invalid end date for auction");
 
         // Check if the initial bid price is > 0
-        require(_initialBid > 0, "Invalid initial bid price");
+        require(_initialBid > 0, "Invalid price");
 
         // Get NFT collection contract
         NFTDepotNFT nftCollection = NFTDepotNFT(_addressNFTCollection);
@@ -304,7 +446,7 @@ contract NFTDepotMarketplace is NFTDepotAuctions {
         // for a specific NFT is the nftOwner of this NFT
         require(
             nftCollection.ownerOf(_nftId) == msg.sender,
-            "Caller is not the nftOwner of the NFT"
+            "Caller not nftOwner"
         );
 
         require(
@@ -314,8 +456,7 @@ contract NFTDepotMarketplace is NFTDepotAuctions {
         // Make sure the nftOwner of the NFT approved that the MarketPlace contract
         // is allowed to change nftOwnership of the NFT
         require(
-            nftCollection.getApproved(_nftId) == address(this),
-            "Require NFT ownership transfer approval"
+            nftCollection.getApproved(_nftId) == address(this)
         );
 
         // Lock NFT in Marketplace contract
@@ -331,7 +472,7 @@ contract NFTDepotMarketplace is NFTDepotAuctions {
             creator: payable(msg.sender),
             currentBidOwner: currentBidOwner,
             currentBidPrice: _initialBid,
-            endAuction: (block.timestamp + endAuction),
+            endAuction: (block.timestamp + _endAuction),
             bidCount: 0
         });
 
@@ -367,19 +508,16 @@ contract NFTDepotMarketplace is NFTDepotAuctions {
      * @param _auctionIndex Index of auction
      */
     function claimNFT(uint256 _auctionIndex) external {
-        require(_auctionIndex < allAuctions.length, "Invalid auction index");
+        require(_auctionIndex < allAuctions.length);
 
         // Check if the auction is closed
-        require(!isOpen(_auctionIndex), "Auction is still open");
+        require(!isOpen(_auctionIndex));
 
         // Get auction
         Auction storage auction = allAuctions[_auctionIndex];
 
         // Check if the caller is the winner of the auction
-        require(
-            auction.currentBidOwner == msg.sender,
-            "NFT can be claimed only by the current bid owner"
-        );
+        require(auction.currentBidOwner == msg.sender);
 
         // Get NFT collection contract
         NFTDepotNFT nftCollection = NFTDepotNFT(auction.addressNFTCollection);
@@ -394,6 +532,6 @@ contract NFTDepotMarketplace is NFTDepotAuctions {
 
         delete (s_listings[auction.addressNFTCollection][auction.nftId]);
 
-        emit NFTClaimed(_auctionIndex, auction.nftId, msg.sender);
+        // emit NFTClaimed(_auctionIndex, auction.nftId, msg.sender);
     }
 }

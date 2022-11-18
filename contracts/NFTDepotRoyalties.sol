@@ -10,13 +10,13 @@ contract NFTDepotRoyalties {
         uint256 percentageOfRoyalty;
     }
 
-    event RoyalityCreated(
-        address NFTCollection,
-        address to,
-        uint256 percentage
-    );
-    event RoyaltyPaid(address to, uint256 amount);
-    event RoyaltyDataUpdated(address reciever, uint256 Percentage);
+    // event RoyalityCreated(
+    //     address NFTCollection,
+    //     address to,
+    //     uint256 percentage
+    // );
+    // event RoyaltyPaid(address to, uint256 amount);
+    // event RoyaltyDataUpdated(address reciever, uint256 Percentage);
 
     error InvalidAddresses();
     error InvalidPercentageAmount();
@@ -36,7 +36,6 @@ contract NFTDepotRoyalties {
     * @param _addressNFTCollection is address of the contract
     * @param _royaltyReciever Address of the singular royalty
     * @param _royaltyPercentage Percentage of royalty from to 1000 in BIPs 
-
      */
     function setRoyalty(
         address _addressNFTCollection,
@@ -60,11 +59,11 @@ contract NFTDepotRoyalties {
             _royaltyPercentage
         );
 
-        emit RoyalityCreated(
-            _addressNFTCollection,
-            _royaltyReciever,
-            _royaltyPercentage
-        );
+        // emit RoyalityCreated(
+        //     _addressNFTCollection,
+        //     _royaltyReciever,
+        //     _royaltyPercentage
+        // );
     }
 
     /** 
@@ -72,7 +71,6 @@ contract NFTDepotRoyalties {
     * @param _addressNFTCollection is address of the contract
     * @param _royaltyReciever Address of the singular royalty
     * @param _royaltyPercentage Percentage of royalty from to 1000 in the form of bips
-
      */
     function updateRoyalty(
         address _addressNFTCollection,
@@ -93,7 +91,7 @@ contract NFTDepotRoyalties {
         // Set new reciever address
         RoyaltyRecord[_addressNFTCollection].royaltyReciever = _royaltyReciever;
 
-        emit RoyaltyDataUpdated(_royaltyReciever, _royaltyPercentage);
+        // emit RoyaltyDataUpdated(_royaltyReciever, _royaltyPercentage);
     }
 
     /**

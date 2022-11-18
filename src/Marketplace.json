@@ -1,5 +1,5 @@
 {
-  "address": "0xBC2aC1CbBeD7D5858Bb917b02FdfbD1d5AC1dA4c",
+  "address": "0x0a177cB2D7f3575b3dC94187fb3DD64B75fE1810",
   "abi": [
     {
       "type": "constructor",
@@ -17,7 +17,6 @@
     { "type": "error", "name": "AuctionClosed", "inputs": [] },
     { "type": "error", "name": "AuctionHasBids", "inputs": [] },
     { "type": "error", "name": "AuctionStillOpen", "inputs": [] },
-    { "type": "error", "name": "ContractCall", "inputs": [] },
     { "type": "error", "name": "InvalidAddresses", "inputs": [] },
     { "type": "error", "name": "InvalidAuction", "inputs": [] },
     { "type": "error", "name": "InvalidAuctionCreator", "inputs": [] },
@@ -34,7 +33,6 @@
       ]
     },
     { "type": "error", "name": "NotOwner", "inputs": [] },
-    { "type": "error", "name": "OwnerCannotBid", "inputs": [] },
     { "type": "error", "name": "PriceMustBeAboveZero", "inputs": [] },
     {
       "type": "error",
@@ -43,58 +41,6 @@
         { "type": "address", "name": "_addressNFTCollection" },
         { "type": "uint256", "name": "nftId" },
         { "type": "uint256", "name": "price" }
-      ]
-    },
-    {
-      "type": "event",
-      "anonymous": false,
-      "name": "ItemBought",
-      "inputs": [
-        { "type": "address", "name": "buyer", "indexed": true },
-        { "type": "address", "name": "_addressNFTCollection", "indexed": true },
-        { "type": "uint256", "name": "nftId", "indexed": true },
-        { "type": "uint256", "name": "price", "indexed": false }
-      ]
-    },
-    {
-      "type": "event",
-      "anonymous": false,
-      "name": "ItemCanceled",
-      "inputs": [
-        { "type": "address", "name": "seller", "indexed": true },
-        { "type": "address", "name": "_addressNFTCollection", "indexed": true },
-        { "type": "uint256", "name": "nftId", "indexed": true }
-      ]
-    },
-    {
-      "type": "event",
-      "anonymous": false,
-      "name": "ItemListed",
-      "inputs": [
-        { "type": "address", "name": "seller", "indexed": true },
-        { "type": "address", "name": "_addressNFTCollection", "indexed": true },
-        { "type": "uint256", "name": "nftId", "indexed": true },
-        { "type": "uint256", "name": "price", "indexed": false }
-      ]
-    },
-    {
-      "type": "event",
-      "anonymous": false,
-      "name": "NFTClaimed",
-      "inputs": [
-        { "type": "uint256", "name": "auctionIndex", "indexed": false },
-        { "type": "uint256", "name": "nftId", "indexed": false },
-        { "type": "address", "name": "claimedBy", "indexed": false }
-      ]
-    },
-    {
-      "type": "event",
-      "anonymous": false,
-      "name": "NFTRefunded",
-      "inputs": [
-        { "type": "uint256", "name": "auctionIndex", "indexed": false },
-        { "type": "uint256", "name": "nftId", "indexed": false },
-        { "type": "address", "name": "claimedBy", "indexed": false }
       ]
     },
     {
@@ -115,57 +61,10 @@
     {
       "type": "event",
       "anonymous": false,
-      "name": "NewBidOnAuction",
-      "inputs": [
-        { "type": "uint256", "name": "auctionIndex", "indexed": false },
-        { "type": "uint256", "name": "newBid", "indexed": false }
-      ]
-    },
-    {
-      "type": "event",
-      "anonymous": false,
       "name": "OwnershipTransferred",
       "inputs": [
         { "type": "address", "name": "previousOwner", "indexed": true },
         { "type": "address", "name": "newOwner", "indexed": true }
-      ]
-    },
-    {
-      "type": "event",
-      "anonymous": false,
-      "name": "RoyalityCreated",
-      "inputs": [
-        { "type": "address", "name": "NFTCollection", "indexed": false },
-        { "type": "address", "name": "to", "indexed": false },
-        { "type": "uint256", "name": "percentage", "indexed": false }
-      ]
-    },
-    {
-      "type": "event",
-      "anonymous": false,
-      "name": "RoyaltyDataUpdated",
-      "inputs": [
-        { "type": "address", "name": "reciever", "indexed": false },
-        { "type": "uint256", "name": "Percentage", "indexed": false }
-      ]
-    },
-    {
-      "type": "event",
-      "anonymous": false,
-      "name": "RoyaltyPaid",
-      "inputs": [
-        { "type": "address", "name": "to", "indexed": false },
-        { "type": "uint256", "name": "amount", "indexed": false }
-      ]
-    },
-    {
-      "type": "event",
-      "anonymous": false,
-      "name": "TokensClaimed",
-      "inputs": [
-        { "type": "uint256", "name": "auctionIndex", "indexed": false },
-        { "type": "uint256", "name": "nftId", "indexed": false },
-        { "type": "address", "name": "claimedBy", "indexed": false }
       ]
     },
     {
@@ -179,6 +78,15 @@
         { "type": "address", "name": "royaltyReciever" },
         { "type": "uint256", "name": "percentageOfRoyalty" }
       ]
+    },
+    {
+      "type": "function",
+      "name": "acceptOffer",
+      "constant": false,
+      "stateMutability": "payable",
+      "payable": true,
+      "inputs": [{ "type": "uint256", "name": "_offerId" }],
+      "outputs": []
     },
     {
       "type": "function",
@@ -210,6 +118,24 @@
         { "type": "address", "name": "_addressNFTCollection" },
         { "type": "uint256", "name": "NFTId" },
         { "type": "bool", "name": "isListed" }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "allOffers",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "uint256" }],
+      "outputs": [
+        { "type": "uint256", "name": "offerId" },
+        { "type": "address", "name": "sender" },
+        { "type": "address", "name": "reciever" },
+        { "type": "address", "name": "_addressNFTCollection" },
+        { "type": "uint256", "name": "id" },
+        { "type": "uint256", "name": "price" },
+        { "type": "bool", "name": "accepted" },
+        { "type": "bool", "name": "cancel" }
       ]
     },
     {
@@ -285,6 +211,15 @@
     },
     {
       "type": "function",
+      "name": "cancelOffer",
+      "constant": false,
+      "stateMutability": "payable",
+      "payable": true,
+      "inputs": [{ "type": "uint256", "name": "_offerId" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
       "name": "claimNFT",
       "constant": false,
       "payable": false,
@@ -328,6 +263,29 @@
             { "type": "address", "name": "_addressNFTCollection" },
             { "type": "uint256", "name": "NFTId" },
             { "type": "bool", "name": "isListed" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getAllOffers",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [
+        {
+          "type": "tuple[]",
+          "components": [
+            { "type": "uint256", "name": "offerId" },
+            { "type": "address", "name": "sender" },
+            { "type": "address", "name": "reciever" },
+            { "type": "address", "name": "_addressNFTCollection" },
+            { "type": "uint256", "name": "id" },
+            { "type": "uint256", "name": "price" },
+            { "type": "bool", "name": "accepted" },
+            { "type": "bool", "name": "cancel" }
           ]
         }
       ]
@@ -500,6 +458,15 @@
     },
     {
       "type": "function",
+      "name": "offerId",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [{ "type": "uint256" }]
+    },
+    {
+      "type": "function",
       "name": "onERC721Received",
       "constant": false,
       "payable": false,
@@ -549,6 +516,18 @@
         { "type": "address", "name": "seller" },
         { "type": "bool", "name": "isListedState" }
       ]
+    },
+    {
+      "type": "function",
+      "name": "sendOffer",
+      "constant": false,
+      "stateMutability": "payable",
+      "payable": true,
+      "inputs": [
+        { "type": "address", "name": "_addressNFTCollection" },
+        { "type": "uint256", "name": "nftId" }
+      ],
+      "outputs": []
     },
     {
       "type": "function",
