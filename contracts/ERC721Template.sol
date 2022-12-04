@@ -1,115 +1,81 @@
-// SPDX-License-Identifier: Unlicense
+//SPDX-License-Identifier: Unlicensed
 pragma solidity ^0.8.4;
 
-import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721BurnableUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/utils/cryptography/draft-EIP712Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721RoyaltyUpgradeable.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
+import "hardhat/console.sol";
 
-//sdfsdfs
+contract ERC721Template is ERC721, Ownable {
+    // This is for opensea contract name display
+    using Strings for uint256;
+    uint256 public totalMinted = 0;
+    uint256 public mintPrice;
+    uint256 public totalMintableSupply;
+    string public baseURI;
+    string public baseExtension = ".json";
 
-contract ERC721Template is Initializable, ERC721Upgradeable, EIP712Upgradeable, ERC721URIStorageUpgradeable, ERC721BurnableUpgradeable, ERC721RoyaltyUpgradeable, OwnableUpgradeable {
-    // constructor(string memory _name, string memory _symbol) ERC721(_name, _symbol) {}
-    using CountersUpgradeable for CountersUpgradeable.Counter;
 
-    CountersUpgradeable.Counter private _tokenIdCounter;
+    uint256 _tokenIdCounter = 0;
 
-    string private constant SIGNING_DOMAIN = "NFTDepot-Voucher";
-    string private constant SIGNATURE_VERSION = "1";
-    address public minter;
-    mapping (uint256 => bool) private updatedTokens;
-
-    event URIUpdated(uint256 tokenId, string uri);
-
-    /// @custom:oz-upgrades-unsafe-allow constructor
-    // constructor() initializer {}
-    struct LazyNFTVoucher {
-        uint256 tokenId;
-        uint256 price;
-        string uri;
-        address buyer;
-        bytes signature;
+    constructor(string memory name, string memory symbol, string memory _uri, uint256 _totalSupply, uint256 _mintPrice) ERC721(name, symbol) {
+        setBaseURI(_uri);
+        totalMintableSupply = _totalSupply;
+        mintPrice = _mintPrice;
     }
 
-    function initialize(address _owner, string memory _name, string memory _symbol, address _minter) initializer public {
-        __ERC721_init(_name, _symbol);
-        __EIP712_init(SIGNING_DOMAIN, SIGNATURE_VERSION);
-        __ERC721URIStorage_init();
-        __ERC721Burnable_init();
-        
-        __ERC721Royalty_init();
-        _setDefaultRoyalty(_owner, 500); // 5%
-
-        _transferOwnership(_owner);
-        minter = _minter;
+    function _baseURI() internal view override returns (string memory) {
+        return baseURI;
     }
 
-    function recover(LazyNFTVoucher calldata voucher) public view returns (address) {
-        bytes32 digest = _hashTypedDataV4(keccak256(abi.encode(
-            keccak256("LazyNFTVoucher(uint256 tokenId,uint256 price,string uri,address buyer)"),
-            voucher.tokenId,
-            voucher.price,
-            keccak256(bytes(voucher.uri)),
-            voucher.buyer
-        )));
-        address signer = ECDSAUpgradeable.recover(digest, voucher.signature);
-        return signer;
+    function safeMint() public payable {
+        require(msg.value == mintPrice, "Incorrect Mint Price!");
+        require(totalMinted < totalMintableSupply, "Max supply reached");
+        uint256 tokenId = _tokenIdCounter;
+        _tokenIdCounter++;
+        totalMinted++;
+        _safeMint(msg.sender, tokenId);
+   }
+
+    function setBaseURI(string memory _newBaseURI) public onlyOwner {
+        baseURI = _newBaseURI;
     }
 
-    function safeMint(LazyNFTVoucher calldata voucher)
+    function setBaseExtension(string memory _newBaseExtension)
         public
-        payable
+        onlyOwner
     {
-        require(minter == recover(voucher), "Wrong signature.");
-        require(msg.value >= voucher.price, "Not enough ether sent.");
-        _safeMint(voucher.buyer, voucher.tokenId);
-        _setTokenURI(voucher.tokenId, voucher.uri);
-    }
-
-    // The following functions are overrides required by Solidity.
-
-    function _burn(uint256 tokenId)
-        internal
-        override(ERC721Upgradeable, ERC721URIStorageUpgradeable, ERC721RoyaltyUpgradeable)
-    {
-        super._burn(tokenId);
+        baseExtension = _newBaseExtension;
     }
 
     function tokenURI(uint256 tokenId)
         public
         view
-        override(ERC721Upgradeable, ERC721URIStorageUpgradeable)
+        virtual
+        override
         returns (string memory)
     {
-        return super.tokenURI(tokenId);
+        require(
+            _exists(tokenId),
+            "ERC721Metadata: URI query for nonexistent token"
+        );
+
+        string memory currentBaseURI = _baseURI();
+        return
+            bytes(currentBaseURI).length > 0
+                ? string(
+                    abi.encodePacked(
+                        currentBaseURI,
+                        tokenId.toString(),
+                        baseExtension
+                    )
+                )
+                : "";
     }
 
-    function updateURI(uint256 tokenId, string memory uri) public {
-        require(msg.sender == ownerOf(tokenId), "Only owner can update URI.");
-        require(updatedTokens[tokenId] == false, "Token has already been updated.");
+        function transferOwnership(address newOwner) public virtual override onlyOwner {
+        require(newOwner != address(0), "Ownable: new owner is the zero address");
+        _transferOwnership(newOwner);
 
-        updatedTokens[tokenId] = true;
-        _setTokenURI(tokenId, uri);
-
-        emit URIUpdated(tokenId, uri);
     }
-
-    function supportsInterface(bytes4 interfaceId)
-		public
-		view
-		override(
-			ERC721Upgradeable,
-			ERC721RoyaltyUpgradeable
-		)
-		returns (bool)
-	{
-		return super.supportsInterface(interfaceId);
-	}
-
 }
-

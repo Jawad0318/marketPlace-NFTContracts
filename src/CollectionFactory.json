@@ -1,0 +1,80 @@
+{
+  "address": "0x83Ce04083d6DAbB42780a3098160A8Aefb10C16A",
+  "abi": [
+    {
+      "type": "function",
+      "name": "CollectionRecords",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "address" }, { "type": "address" }],
+      "outputs": [
+        { "type": "address", "name": "owner" },
+        { "type": "string", "name": "uri" },
+        { "type": "string", "name": "name" },
+        { "type": "string", "name": "symbol" },
+        { "type": "uint256", "name": "totalSupply" },
+        { "type": "uint256", "name": "mintPrice" }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "createCollection",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "string", "name": "_name" },
+        { "type": "string", "name": "_symbol" },
+        { "type": "string", "name": "_uri" },
+        { "type": "uint256", "name": "_totalSupply" },
+        { "type": "uint256", "name": "_mintPrice" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "getCollections",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "_owner" }],
+      "outputs": [
+        {
+          "type": "tuple",
+          "components": [{ "type": "address[]", "name": "nftcollections" }]
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "nftTemp",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [{ "type": "address" }]
+    },
+    {
+      "type": "function",
+      "name": "updatePrice",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "uint256", "name": "_newPrice" },
+        { "type": "address", "name": "_nftCollection" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "updateUri",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "string", "name": "_newUri" },
+        { "type": "address", "name": "_nftCollection" }
+      ],
+      "outputs": []
+    }
+  ]
+}
