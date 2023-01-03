@@ -14,14 +14,24 @@ contract ERC721Template is ERC721, Ownable {
     uint256 public totalMintableSupply;
     string public baseURI;
     string public baseExtension = ".json";
-
-
+    uint256 public startDate;
+    uint256 public expirationDate;
     uint256 _tokenIdCounter = 0;
 
-    constructor(string memory name, string memory symbol, string memory _uri, uint256 _totalSupply, uint256 _mintPrice) ERC721(name, symbol) {
+    constructor(
+        string memory name,
+        string memory symbol,
+        string memory _uri,
+        uint256 _totalSupply,
+        uint256 _mintPrice,
+        uint256 _startDate,
+        uint256 _expirationDate
+    ) ERC721(name, symbol) {
         setBaseURI(_uri);
         totalMintableSupply = _totalSupply;
         mintPrice = _mintPrice;
+        startDate = _startDate;
+        expirationDate = _expirationDate;
     }
 
     function _baseURI() internal view override returns (string memory) {
@@ -29,13 +39,15 @@ contract ERC721Template is ERC721, Ownable {
     }
 
     function safeMint() public payable {
+        require(block.timestamp >= startDate, "Mint Not Started yet");
+        require(block.timestamp >= expirationDate, "Mint Has Ended");
         require(msg.value == mintPrice, "Incorrect Mint Price!");
         require(totalMinted < totalMintableSupply, "Max supply reached");
         uint256 tokenId = _tokenIdCounter;
         _tokenIdCounter++;
         totalMinted++;
         _safeMint(msg.sender, tokenId);
-   }
+    }
 
     function setBaseURI(string memory _newBaseURI) public onlyOwner {
         baseURI = _newBaseURI;
@@ -73,9 +85,28 @@ contract ERC721Template is ERC721, Ownable {
                 : "";
     }
 
-        function transferOwnership(address newOwner) public virtual override onlyOwner {
-        require(newOwner != address(0), "Ownable: new owner is the zero address");
-        _transferOwnership(newOwner);
+    function updateStartDate(uint256 _startDate) external onlyOwner {
+        startDate = _startDate;
+    }
 
+    function updatePrice(uint256 _newPrice) public onlyOwner {
+        mintPrice = _newPrice;
+    }
+
+    function updateExpirationDate(uint256 _expirationDate) external onlyOwner {
+        expirationDate = _expirationDate;
+    }
+
+    function transferOwnership(address newOwner)
+        public
+        virtual
+        override
+        onlyOwner
+    {
+        require(
+            newOwner != address(0),
+            "Ownable: new owner is the zero address"
+        );
+        _transferOwnership(newOwner);
     }
 }

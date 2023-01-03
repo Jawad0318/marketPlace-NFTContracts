@@ -1,22 +1,6 @@
 {
-  "address": "0x83Ce04083d6DAbB42780a3098160A8Aefb10C16A",
+  "address": "0x0B3930F90E1721DEB3d1537A0ac9F02a233901a3",
   "abi": [
-    {
-      "type": "function",
-      "name": "CollectionRecords",
-      "constant": true,
-      "stateMutability": "view",
-      "payable": false,
-      "inputs": [{ "type": "address" }, { "type": "address" }],
-      "outputs": [
-        { "type": "address", "name": "owner" },
-        { "type": "string", "name": "uri" },
-        { "type": "string", "name": "name" },
-        { "type": "string", "name": "symbol" },
-        { "type": "uint256", "name": "totalSupply" },
-        { "type": "uint256", "name": "mintPrice" }
-      ]
-    },
     {
       "type": "function",
       "name": "createCollection",
@@ -27,7 +11,9 @@
         { "type": "string", "name": "_symbol" },
         { "type": "string", "name": "_uri" },
         { "type": "uint256", "name": "_totalSupply" },
-        { "type": "uint256", "name": "_mintPrice" }
+        { "type": "uint256", "name": "_mintPrice" },
+        { "type": "uint256", "name": "_startDate" },
+        { "type": "uint256", "name": "_expirationDate" }
       ],
       "outputs": []
     },
@@ -53,28 +39,6 @@
       "payable": false,
       "inputs": [],
       "outputs": [{ "type": "address" }]
-    },
-    {
-      "type": "function",
-      "name": "updatePrice",
-      "constant": false,
-      "payable": false,
-      "inputs": [
-        { "type": "uint256", "name": "_newPrice" },
-        { "type": "address", "name": "_nftCollection" }
-      ],
-      "outputs": []
-    },
-    {
-      "type": "function",
-      "name": "updateUri",
-      "constant": false,
-      "payable": false,
-      "inputs": [
-        { "type": "string", "name": "_newUri" },
-        { "type": "address", "name": "_nftCollection" }
-      ],
-      "outputs": []
     }
   ]
 }
